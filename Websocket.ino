@@ -52,21 +52,21 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
   strcat(data, temp);
   switch (type)
   {
-    case WStype_DISCONNECTED: // Sự kiện khi client ngắt kết nối
-      Serial.printf("[WSc] Disconnected!\n");
-      break;
-    case WStype_CONNECTED: // Sự kiện khi client kết nối
-      Serial.printf("[WSc] Connected to url: %s\n", payload);
-      webSocket.sendTXT(data);
-      Serial.printf("[WSc] Connected to url: %s\n", data);
-      break;
-    case WStype_TEXT: // Sự kiện khi nhận được thông điệp dạng TEXT
-      Serial.printf("[WSc] get text: %s\n", payload);
-      webSocket.sendTXT("Hi Server!"); // Gởi thông điệp đến server
-      break;
-    case WStype_BIN: // Sự kiện khi nhận được thông điệp dạng BINARY
-      Serial.printf("[WSc] get binary length: %u\n", length);
-      hexdump(payload, length);
-      break;
+  case WStype_DISCONNECTED:
+    Serial.printf("[WSc] Disconnected!\n");
+    break;
+  case WStype_CONNECTED:
+    Serial.printf("[WSc] Connected to url: %s\n", payload);
+    webSocket.sendTXT(data);
+    Serial.printf("[WSc] Connected to url: %s\n", data);
+    break;
+  case WStype_TEXT:
+    Serial.printf("[WSc] get text: %s\n", payload);
+    webSocket.sendTXT("Hi Server!");
+    break;
+  case WStype_BIN:
+    Serial.printf("[WSc] get binary length: %u\n", length);
+    hexdump(payload, length);
+    break;
   }
 }
