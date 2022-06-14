@@ -23,7 +23,8 @@ Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, 
 const char *DEFAULT_WS_EVENT_HANDLER = "sync";
 const char *SSID = "36 Ly thuong Kiet";
 const char *PASSWORD = "35792468abcd";
-const char *BACKEND_SERVER_IP = "192.168.1.29";
+const char *BACKEND_SERVER_IP_LOCAL = "192.168.1.29";
+const char *BACKEND_SERVER_IP = "171.248.45.77";
 const int WEBSOCKET_PORT = 2022;
 const int led = 15;
 
@@ -94,7 +95,7 @@ void loop()
 {
   webSocket.loop();
   heartBeatMeasure();
-  displayShow(mlx.readObjectTempC(), beatAvg, 0, 2000);
+  displayShow(mlx.readObjectTempC() + 3.5, beatAvg, 0, 2000);
   Cron.delay();
 }
 
@@ -219,7 +220,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     Serial.printf("[WSc] get text: %s\n", payload);
    if (payload)
    {
-     int level = atoi((char *)payload);
+     int level = atoi((char *)payload);l
      setLedColorByLevel(level);
    }
     break;
@@ -271,11 +272,15 @@ void sendTemperatureToServer()
   // data declare with array index
   // 0 is macAddres
   // 1 is temperature
+  // 2 is heartbeat
+  // 3 is spO2
   JsonArray data = doc.createNestedArray("data");
   data.add(WiFi.macAddress());
-  data.add(mlx.readObjectTempC());
+  data.add(mlx.readObjectTempC() + 3.5);
+  data.add(beatAvg);
   char payload[100];
   serializeJson(doc, payload);
+  Serial.println();
   serializeJson(doc, Serial);
   
   webSocket.sendTXT(payload);
